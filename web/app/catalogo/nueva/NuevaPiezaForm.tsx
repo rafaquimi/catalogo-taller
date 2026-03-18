@@ -106,14 +106,20 @@ export default function NuevaPiezaForm({ families }: { families: Family[] }) {
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={() => cameraInputRef.current?.click()}
+              onClick={() => {
+                if (cameraInputRef.current) cameraInputRef.current.value = "";
+                cameraInputRef.current?.click();
+              }}
               className="rounded-xl bg-black px-4 py-2 text-sm font-medium text-white hover:bg-black/90"
             >
               Cámara
             </button>
             <button
               type="button"
-              onClick={() => galleryInputRef.current?.click()}
+              onClick={() => {
+                if (galleryInputRef.current) galleryInputRef.current.value = "";
+                galleryInputRef.current?.click();
+              }}
               className="rounded-xl border border-black/10 bg-white px-4 py-2 text-sm font-medium text-zinc-800 hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:text-zinc-100 dark:hover:bg-zinc-900"
             >
               Galería
@@ -135,7 +141,11 @@ export default function NuevaPiezaForm({ families }: { families: Family[] }) {
             capture="environment"
             multiple
             className="hidden"
-            onChange={(e) => addFiles(e.target.files)}
+            onChange={(e) => {
+              addFiles(e.target.files);
+              // En iOS, si no limpias el value, futuras capturas pueden "sustituir" la selección.
+              e.currentTarget.value = "";
+            }}
           />
           <input
             ref={galleryInputRef}
@@ -143,7 +153,10 @@ export default function NuevaPiezaForm({ families }: { families: Family[] }) {
             accept="image/*,.heic,.heif"
             multiple
             className="hidden"
-            onChange={(e) => addFiles(e.target.files)}
+            onChange={(e) => {
+              addFiles(e.target.files);
+              e.currentTarget.value = "";
+            }}
           />
 
           <div className="text-xs text-zinc-500">
