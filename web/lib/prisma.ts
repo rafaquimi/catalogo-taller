@@ -9,7 +9,13 @@ if (!databaseUrl) {
   throw new Error("Falta DATABASE_URL en el entorno.");
 }
 
-const pool = new Pool({ connectionString: databaseUrl });
+const pool = new Pool({
+  connectionString: databaseUrl,
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? { rejectUnauthorized: false }
+      : undefined,
+});
 const adapter = new PrismaPg(pool);
 
 export const prisma =
