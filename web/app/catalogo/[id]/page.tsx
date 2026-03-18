@@ -15,9 +15,11 @@ function formatPrice(priceCents: number) {
 export default async function PiezaDetallePage({
   params,
 }: {
-  params: { id: string };
+  // En algunas compilaciones Next puede entregarlo como Promise.
+  params: Promise<{ id: string }> | { id: string };
 }) {
-  const id = params?.id;
+  const resolvedParams = params ? await params : ({} as { id?: string });
+  const id = resolvedParams?.id;
   if (!id) {
     return (
       <div className="space-y-4 rounded-2xl border border-black/10 bg-white p-6 text-sm text-zinc-700 dark:border-white/10 dark:bg-zinc-950 dark:text-zinc-300">
