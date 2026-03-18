@@ -20,7 +20,7 @@ export default async function PiezaDetallePage({
   if (!params?.id) notFound();
   const { id } = params;
 
-  const part = await prisma.part.findUnique({
+  const part = await prisma.part.findFirst({
     where: { id },
     include: { family: true, images: { orderBy: { createdAt: "asc" } } },
   });
