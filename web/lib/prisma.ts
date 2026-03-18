@@ -11,10 +11,10 @@ if (!databaseUrl) {
 
 const pool = new Pool({
   connectionString: databaseUrl,
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false }
-      : undefined,
+  // Supabase (y su pooler) puede presentar una cadena de certificados que
+  // Node/pg considera "self-signed". En serverless (Vercel) es común forzar
+  // no verificar el CA para evitar P1011.
+  ssl: { rejectUnauthorized: false },
 });
 const adapter = new PrismaPg(pool);
 
