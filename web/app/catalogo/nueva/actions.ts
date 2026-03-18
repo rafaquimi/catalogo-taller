@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import path from "path";
@@ -109,6 +108,6 @@ export async function createPart(formData: FormData) {
   }
 
   revalidatePath("/catalogo");
-  redirect("/catalogo");
+  return { ok: true, partId: part.id };
 }
 

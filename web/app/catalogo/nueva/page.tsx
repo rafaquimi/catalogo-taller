@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { createPart } from "./actions";
+import NuevaPiezaForm from "./NuevaPiezaForm";
 
 export const dynamic = "force-dynamic";
 
@@ -31,76 +31,7 @@ export default async function NuevaPiezaPage() {
           </div>
         </div>
       ) : (
-        <form
-          action={createPart}
-          className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-zinc-950"
-        >
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2 space-y-2">
-              <label className="text-sm font-medium">Descripción</label>
-              <textarea
-                name="description"
-                required
-                rows={3}
-                className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-black/10 dark:border-white/10 dark:bg-zinc-950"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Familia</label>
-              <select
-                name="familyId"
-                required
-                className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-black/10 dark:border-white/10 dark:bg-zinc-950"
-                defaultValue={families[0]?.id ?? ""}
-              >
-                {families.map((f: { id: string; name: string }) => (
-                  <option key={f.id} value={f.id}>
-                    {f.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Precio (EUR)</label>
-              <input
-                name="price"
-                required
-                inputMode="decimal"
-                placeholder="Ej: 12,50"
-                className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-black/10 dark:border-white/10 dark:bg-zinc-950"
-              />
-            </div>
-
-            <div className="sm:col-span-2 space-y-2">
-              <label className="text-sm font-medium">Imágenes</label>
-              <input
-                name="images"
-                type="file"
-                accept="image/*"
-                capture="environment"
-                multiple
-                className="block w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm dark:border-white/10 dark:bg-zinc-950"
-              />
-              <p className="text-xs text-zinc-500">
-                En iPhone/Android debería permitir cámara o galería.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-6 flex items-center justify-end gap-3">
-            <Link
-              href="/catalogo"
-              className="rounded-xl border border-black/10 bg-white px-4 py-3 text-sm hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
-            >
-              Cancelar
-            </Link>
-            <button className="rounded-xl bg-black px-4 py-3 text-sm font-medium text-white hover:bg-black/90">
-              Guardar
-            </button>
-          </div>
-        </form>
+        <NuevaPiezaForm families={families} />
       )}
     </div>
   );
