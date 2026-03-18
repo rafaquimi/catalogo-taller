@@ -17,15 +17,30 @@ export default async function PiezaDetallePage({
 }: {
   params: { id: string };
 }) {
-  if (!params?.id) notFound();
-  const { id } = params;
+  const id = params?.id;
+  if (!id) {
+    return (
+      <div className="space-y-4 rounded-2xl border border-black/10 bg-white p-6 text-sm text-zinc-700 dark:border-white/10 dark:bg-zinc-950 dark:text-zinc-300">
+        Falta el parámetro `id`. <a href="/catalogo" className="underline">Volver</a>.
+      </div>
+    );
+  }
 
   const part = await prisma.part.findFirst({
     where: { id },
     include: { family: true, images: { orderBy: { createdAt: "asc" } } },
   });
 
-  if (!part) notFound();
+  if (!part) {
+    return (
+      <div className="space-y-4 rounded-2xl border border-black/10 bg-white p-6 text-sm text-zinc-700 dark:border-white/10 dark:bg-zinc-950 dark:text-zinc-300">
+        No se encontró la pieza con id <span className="font-mono">{id}</span>.
+        <div>
+          <a href="/catalogo" className="underline">Volver al catálogo</a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
