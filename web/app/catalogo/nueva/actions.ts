@@ -92,6 +92,6 @@ export async function createPart(formData: FormData) {
   }
 
   revalidatePath("/catalogo");
-  redirect(`/catalogo/${part.id}`);
+  redirect("/catalogo");
 }
 
