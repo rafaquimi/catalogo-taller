@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  experimental: {
+    serverActions: {
+      // iPhone/Android camera photos can exceed default 1MB.
+      bodySizeLimit: "20mb",
+    },
+  },
   images: {
     remotePatterns: [
       {

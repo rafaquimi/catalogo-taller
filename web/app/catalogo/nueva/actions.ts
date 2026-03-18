@@ -20,7 +20,14 @@ const createPartSchema = z.object({
 
 function extFromName(name: string) {
   const ext = path.extname(name).toLowerCase();
-  if (ext === ".jpg" || ext === ".jpeg" || ext === ".png" || ext === ".webp")
+  if (
+    ext === ".jpg" ||
+    ext === ".jpeg" ||
+    ext === ".png" ||
+    ext === ".webp" ||
+    ext === ".heic" ||
+    ext === ".heif"
+  )
     return ext;
   return ".jpg";
 }
@@ -75,7 +82,7 @@ export async function createPart(formData: FormData) {
       const up = await supabase.storage
         .from(bucket)
         .upload(objectPath, buf, {
-          contentType: file.type || "image/jpeg",
+          contentType: file.type || "application/octet-stream",
           upsert: false,
         });
 
