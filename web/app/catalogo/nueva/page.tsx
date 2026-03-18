@@ -2,6 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { createPart } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function NuevaPiezaPage() {
   const families = await prisma.family.findMany({ orderBy: { name: "asc" } });
 
@@ -52,7 +54,7 @@ export default async function NuevaPiezaPage() {
                 className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-black/10 dark:border-white/10 dark:bg-zinc-950"
                 defaultValue={families[0]?.id ?? ""}
               >
-                {families.map((f) => (
+                {families.map((f: { id: string; name: string }) => (
                   <option key={f.id} value={f.id}>
                     {f.name}
                   </option>

@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
@@ -8,7 +9,8 @@ if (!databaseUrl) {
   throw new Error("Falta DATABASE_URL en el entorno.");
 }
 
-const adapter = new PrismaBetterSqlite3({ url: databaseUrl });
+const pool = new Pool({ connectionString: databaseUrl });
+const adapter = new PrismaPg(pool);
 
 export const prisma =
   globalForPrisma.prisma ??

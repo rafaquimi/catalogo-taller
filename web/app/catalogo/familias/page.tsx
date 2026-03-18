@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { createFamily } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function FamiliasPage() {
   const families = await prisma.family.findMany({
     orderBy: { name: "asc" },
@@ -47,7 +49,8 @@ export default async function FamiliasPage() {
             No hay familias todavía.
           </div>
         ) : (
-          families.map((f) => (
+          families.map(
+            (f: { id: string; name: string; _count: { parts: number } }) => (
             <div
               key={f.id}
               className="grid grid-cols-3 items-center gap-0 border-b border-black/5 px-4 py-3 text-sm last:border-b-0 dark:border-white/5"
@@ -60,7 +63,8 @@ export default async function FamiliasPage() {
                 {f.id}
               </div>
             </div>
-          ))
+          ),
+          )
         )}
       </div>
     </div>

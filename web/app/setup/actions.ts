@@ -21,7 +21,7 @@ export async function createAdmin(formData: FormData) {
 
   const parsed = setupSchema.safeParse(raw);
   if (!parsed.success) {
-    return { ok: false as const, error: "Revisa el email y la contraseña." };
+    throw new Error("Revisa el email y la contraseña.");
   }
 
   const passwordHash = await bcrypt.hash(parsed.data.password, 12);

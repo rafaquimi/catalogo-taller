@@ -6,8 +6,8 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: "file:/data/catalogo.db"
-      NEXTAUTH_SECRET: "cambia-esto-en-produccion"
-      NEXTAUTH_URL: "http://localhost:3000"
+      NEXTAUTH_SECRET: "CAMBIA-ESTO-EN-PRODUCCION-por-una-cadena-larga"
+      NEXTAUTH_URL: "http://207.188.144.112:3000"
     volumes:
       - ./data:/data
       - ./uploads:/app/public/uploads

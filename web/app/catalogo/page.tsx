@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 function formatPrice(priceCents: number) {
   return new Intl.NumberFormat("es-ES", {
     style: "currency",
@@ -46,7 +48,7 @@ export default async function CatalogoPage({
           >
             Todas
           </Link>
-          {families.map((f) => (
+          {families.map((f: { id: string; name: string }) => (
             <Link
               key={f.id}
               href={`/catalogo?familia=${encodeURIComponent(f.id)}`}
@@ -68,7 +70,13 @@ export default async function CatalogoPage({
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {parts.map((p) => {
+          {parts.map((p: {
+            id: string;
+            description: string;
+            priceCents: number;
+            family: { name: string };
+            images: { url: string }[];
+          }) => {
             const cover = p.images[0]?.url ?? null;
             return (
               <Link

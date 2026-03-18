@@ -2,6 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { LoginForm } from "./LoginForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function LoginPage() {
   const hasUsers = (await prisma.user.count()) > 0;
 

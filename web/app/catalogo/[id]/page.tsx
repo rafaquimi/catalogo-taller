@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 function formatPrice(priceCents: number) {
   return new Intl.NumberFormat("es-ES", {
     style: "currency",
@@ -15,6 +17,7 @@ export default async function PiezaDetallePage({
 }: {
   params: { id: string };
 }) {
+  if (!params?.id) notFound();
   const { id } = params;
 
   const part = await prisma.part.findUnique({
@@ -48,7 +51,7 @@ export default async function PiezaDetallePage({
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {part.images.map((img) => (
+          {part.images.map((img: { id: string; url: string }) => (
             <a
               key={img.id}
               href={img.url}

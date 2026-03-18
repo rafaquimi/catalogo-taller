@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { createAdmin } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function SetupPage() {
   const hasUsers = (await prisma.user.count()) > 0;
   if (hasUsers) redirect("/login");
