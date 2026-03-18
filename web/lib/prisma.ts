@@ -9,8 +9,22 @@ if (!databaseUrl) {
   throw new Error("Falta DATABASE_URL en el entorno.");
 }
 
+function sanitizeDatabaseUrl(url: string) {
+  try {
+    const u = new URL(url);
+    // Evita que pg-connection-string derive opciones SSL que sobrescriban
+    // la configuración explícita de `ssl` en el Pool.
+    u.searchParams.delete("sslmode");
+    u.searchParams.delete("ssl");
+    u.searchParams.delete("uselibpqcompat");
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 const pool = new Pool({
-  connectionString: databaseUrl,
+  connectionString: sanitizeDatabaseUrl(databaseUrl),
   // Supabase (y su pooler) puede presentar una cadena de certificados que
   // Node/pg considera "self-signed". En serverless (Vercel) es común forzar
   // no verificar el CA para evitar P1011.
