@@ -1,15 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import PartCardCarousel from "./PartCardCarousel";
 
 export const dynamic = "force-dynamic";
-
-function formatPrice(priceCents: number) {
-  return new Intl.NumberFormat("es-ES", {
-    style: "currency",
-    currency: "EUR",
-  }).format(priceCents / 100);
-}
 
 export default async function CatalogoPage({
   searchParams,
@@ -75,36 +68,17 @@ export default async function CatalogoPage({
             description: string;
             priceCents: number;
             family: { name: string };
-            images: { url: string }[];
+            images: { id: string; url: string }[];
           }) => {
-            const cover = p.images[0]?.url ?? null;
             return (
-              <Link
+              <PartCardCarousel
                 key={p.id}
-                href={`/catalogo/${p.id}`}
-                className="group overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm hover:shadow-md dark:border-white/10 dark:bg-zinc-950"
-              >
-                <div className="relative aspect-[4/3] w-full bg-zinc-100 dark:bg-zinc-900">
-                  {cover ? (
-                    <Image
-                      src={cover}
-                      alt={p.description}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                      sizes="(max-width: 1024px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-xs text-zinc-500">
-                      Sin imagen
-                    </div>
-                  )}
-                </div>
-                <div className="space-y-1 p-4">
-                  <div className="text-xs text-zinc-500">{p.family.name}</div>
-                  <div className="text-sm font-medium">{p.description}</div>
-                  <div className="text-sm">{formatPrice(p.priceCents)}</div>
-                </div>
-              </Link>
+                partId={p.id}
+                familyName={p.family.name}
+                description={p.description}
+                priceCents={p.priceCents}
+                images={p.images}
+              />
             );
           })}
         </div>
