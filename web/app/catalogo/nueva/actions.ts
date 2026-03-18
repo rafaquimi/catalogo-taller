@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import path from "path";
 import crypto from "crypto";
 import { createClient } from "@supabase/supabase-js";
+import sharp from "sharp";
 
 const createPartSchema = z.object({
   description: z.string().min(1),
@@ -18,18 +19,18 @@ const createPartSchema = z.object({
     .refine((n) => Number.isFinite(n) && n >= 0, "Precio inválido"),
 });
 
-function extFromName(name: string) {
-  const ext = path.extname(name).toLowerCase();
-  if (
-    ext === ".jpg" ||
-    ext === ".jpeg" ||
-    ext === ".png" ||
-    ext === ".webp" ||
-    ext === ".heic" ||
-    ext === ".heif"
-  )
-    return ext;
-  return ".jpg";
+function buildCompressedWebp(input: Buffer) {
+  // Foto de móvil: recortar a un tamaño razonable para catálogo
+  // Mantiene buena calidad pero reduce mucho el peso.
+  return sharp(input)
+    .rotate()
+    .resize({
+      width: 1600,
+      height: 1600,
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .webp({ quality: 82 });
 }
 
 function getSupabaseAdmin() {
@@ -76,13 +77,22 @@ export async function createPart(formData: FormData) {
     const imagesData: { url: string; partId: string }[] = [];
     for (const file of files) {
       const buf = Buffer.from(await file.arrayBuffer());
-      const filename = `${crypto.randomUUID()}${extFromName(file.name)}`;
+      const filename = `${crypto.randomUUID()}.webp`;
       const objectPath = `parts/${part.id}/${filename}`;
+
+      // Comprimimos en el servidor para que iPhone (cámara) no suba ficheros enormes.
+      // Si algo falla (imagen no compatible), caemos al original.
+      let payload = buf;
+      try {
+        payload = await buildCompressedWebp(buf).toBuffer();
+      } catch {
+        payload = buf;
+      }
 
       const up = await supabase.storage
         .from(bucket)
-        .upload(objectPath, buf, {
-          contentType: file.type || "application/octet-stream",
+        .upload(objectPath, payload, {
+          contentType: "image/webp",
           upsert: false,
         });
 
