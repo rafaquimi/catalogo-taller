@@ -41,6 +41,18 @@ function getSupabaseAdmin() {
   });
 }
 
+function extractStorageObjectPath(publicUrl: string, bucket: string) {
+  try {
+    const url = new URL(publicUrl);
+    const marker = `/storage/v1/object/public/${bucket}/`;
+    const idx = url.pathname.indexOf(marker);
+    if (idx === -1) return null;
+    return decodeURIComponent(url.pathname.slice(idx + marker.length));
+  } catch {
+    return null;
+  }
+}
+
 export async function updatePart(formData: FormData) {
   const raw = {
     id: String(formData.get("id") ?? ""),
@@ -106,5 +118,31 @@ export async function deletePart(formData: FormData) {
   await prisma.part.delete({ where: { id } });
   revalidatePath("/catalogo");
   redirect("/catalogo");
+}
+
+export async function deletePartImage(formData: FormData) {
+  const imageId = String(formData.get("imageId") ?? "");
+  const partId = String(formData.get("partId") ?? "");
+  if (!imageId || !partId) return;
+
+  const image = await prisma.partImage.findUnique({ where: { id: imageId } });
+  if (!image || image.partId !== partId) return;
+
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET ?? "catalogo";
+  const objectPath = extractStorageObjectPath(image.url, bucket);
+  if (objectPath) {
+    try {
+      const supabase = getSupabaseAdmin();
+      await supabase.storage.from(bucket).remove([objectPath]);
+    } catch {
+      // Si falla Storage, continuamos y eliminamos al menos el registro en BD.
+    }
+  }
+
+  await prisma.partImage.delete({ where: { id: imageId } });
+  revalidatePath("/catalogo");
+  revalidatePath(`/catalogo/${partId}`);
+  revalidatePath(`/catalogo/${partId}/editar`);
+  redirect(`/catalogo/${partId}/editar`);
 }
 
