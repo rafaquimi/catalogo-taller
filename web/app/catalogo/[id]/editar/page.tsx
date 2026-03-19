@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { deletePartImage, updatePart } from "../actions";
 
@@ -16,15 +15,21 @@ export default async function EditarPiezaPage({
   const id = resolved?.id;
   if (!id) notFound();
 
-  const [part, families]: [
-    Prisma.PartGetPayload<{ include: { images: true; family: true } }> | null,
+  const [part, families, images]: [
+    { id: string; description: string; priceCents: number; familyId: string } | null,
     { id: string; name: string }[],
+    { id: string; url: string }[],
   ] = await Promise.all([
-    prisma.part.findUnique({
+    prisma.part.findFirst({
       where: { id },
-      include: { images: true, family: true },
+      select: { id: true, description: true, priceCents: true, familyId: true },
     }),
     prisma.family.findMany({ orderBy: { name: "asc" } }),
+    prisma.partImage.findMany({
+      where: { partId: id },
+      orderBy: { createdAt: "asc" },
+      select: { id: true, url: true },
+    }),
   ]);
 
   if (!part) notFound();
@@ -110,13 +115,13 @@ export default async function EditarPiezaPage({
 
       <div className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-zinc-950">
         <h2 className="text-base font-medium">Imágenes actuales</h2>
-        {part.images.length === 0 ? (
+        {images.length === 0 ? (
           <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
             Esta pieza no tiene imágenes todavía.
           </p>
         ) : (
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {part.images.map((img: { id: string; url: string }) => (
+            {images.map((img: { id: string; url: string }) => (
               <div
                 key={img.id}
                 className="overflow-hidden rounded-xl border border-black/10 dark:border-white/10"
