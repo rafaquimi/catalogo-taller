@@ -65,7 +65,7 @@ export default async function CatalogoPage({
             {(familia || q) && (
               <Link
                 href="/catalogo"
-                className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+                className="rounded-full border border-blue-300 bg-white px-3 py-1.5 text-xs text-blue-700 hover:bg-blue-50 dark:border-blue-600 dark:bg-zinc-950 dark:text-blue-300 dark:hover:bg-zinc-900"
               >
                 Limpiar filtros
               </Link>

@@ -42,7 +42,7 @@ export default function PartCardCarousel({
   return (
     <Link
       href={`/catalogo/${partId}`}
-      className="group overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm hover:shadow-md dark:border-white/10 dark:bg-zinc-950"
+      className="group overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm hover:shadow-lg hover:border-blue-300 transition-all duration-200 dark:border-blue-900 dark:bg-zinc-950"
     >
       <div className="relative">
         <div className="relative aspect-[4/3] w-full bg-zinc-100 dark:bg-zinc-900">
@@ -107,9 +107,9 @@ export default function PartCardCarousel({
       </div>
 
       <div className="space-y-1 p-4">
-        <div className="text-xs text-zinc-500">{familyName}</div>
-        <div className="text-sm font-medium">{description}</div>
-        <div className="text-sm">{formatPrice(priceCents)}</div>
+        <div className="text-sm font-semibold text-blue-600 dark:text-blue-400">{familyName}</div>
+        <div className="text-base font-semibold text-zinc-800 dark:text-zinc-100">{description}</div>
+        <div className="text-base font-bold text-red-600 dark:text-red-400">{formatPrice(priceCents)}</div>
       </div>
     </Link>
   );

@@ -46,7 +46,7 @@ export default function SearchInput({ defaultValue }: { defaultValue?: string })
         value={value}
         onChange={handleChange}
         placeholder="Buscar por nombre..."
-        className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 pr-8 text-sm outline-none focus:ring-2 focus:ring-black/10 dark:border-white/10 dark:bg-zinc-950"
+        className="w-full rounded-xl border border-blue-200 bg-white px-3 py-2 pr-8 text-sm outline-none focus:ring-2 focus:ring-blue-400 dark:border-blue-700 dark:bg-zinc-950"
       />
       {value && (
         <button

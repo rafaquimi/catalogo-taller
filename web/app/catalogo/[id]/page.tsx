@@ -49,16 +49,16 @@ export default async function PiezaDetallePage({
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
-          <div className="text-xs text-zinc-500">{part.family.name}</div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <div className="text-base font-semibold text-blue-600 dark:text-blue-400">{part.family.name}</div>
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
             {part.description}
           </h1>
-          <div className="text-lg">{formatPrice(part.priceCents)}</div>
+          <div className="text-xl font-bold text-red-600 dark:text-red-400">{formatPrice(part.priceCents)}</div>
         </div>
         <div className="flex items-center gap-2">
           <Link
             href={`/catalogo/${part.id}/editar`}
-            className="rounded-xl border border-black/10 bg-white px-4 py-3 text-sm hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+            className="rounded-xl border border-blue-300 bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-500 dark:border-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600"
           >
             Editar
           </Link>
@@ -75,7 +75,7 @@ export default async function PiezaDetallePage({
           </form>
           <Link
             href="/catalogo"
-            className="rounded-xl border border-black/10 bg-white px-4 py-3 text-sm hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+            className="rounded-xl border border-blue-200 bg-white px-4 py-3 text-sm font-medium text-blue-700 hover:bg-blue-50 dark:border-blue-700 dark:bg-zinc-950 dark:text-blue-300 dark:hover:bg-zinc-900"
           >
             Volver
           </Link>

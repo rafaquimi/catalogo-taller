@@ -28,7 +28,7 @@ export default function FamiliaSelect({
         name="familia"
         value={selected ?? ""}
         onChange={handleChange}
-        className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10 dark:border-white/10 dark:bg-zinc-950"
+        className="w-full rounded-xl border border-blue-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400 dark:border-blue-700 dark:bg-zinc-950"
       >
         <option value="">Todas las familias</option>
         {families.map((f) => (
