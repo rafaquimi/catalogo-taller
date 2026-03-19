@@ -81,7 +81,7 @@ export async function createPart(formData: FormData) {
 
       // Comprimimos en el servidor para que iPhone (cámara) no suba ficheros enormes.
       // Si algo falla (imagen no compatible), caemos al original.
-      let payload = buf;
+      let payload: Uint8Array = buf;
       try {
         payload = await buildCompressedWebp(buf).toBuffer();
       } catch {
