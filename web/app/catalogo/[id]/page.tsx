@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { deletePart } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -54,12 +55,26 @@ export default async function PiezaDetallePage({
           </h1>
           <div className="text-lg">{formatPrice(part.priceCents)}</div>
         </div>
-        <Link
-          href="/catalogo"
-          className="rounded-xl border border-black/10 bg-white px-4 py-3 text-sm hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
-        >
-          Volver
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/catalogo/${part.id}/editar`}
+            className="rounded-xl border border-black/10 bg-white px-4 py-3 text-sm hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+          >
+            Editar
+          </Link>
+          <form action={deletePart}>
+            <input type="hidden" name="id" value={part.id} />
+            <button className="rounded-xl border border-red-500/30 px-4 py-3 text-sm text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40">
+              Eliminar
+            </button>
+          </form>
+          <Link
+            href="/catalogo"
+            className="rounded-xl border border-black/10 bg-white px-4 py-3 text-sm hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+          >
+            Volver
+          </Link>
+        </div>
       </div>
 
       {part.images.length === 0 ? (

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { createFamily } from "./actions";
+import { createFamily, deleteFamily, updateFamily } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -39,10 +39,11 @@ export default async function FamiliasPage() {
       </form>
 
       <div className="overflow-hidden rounded-2xl border border-black/10 bg-white dark:border-white/10 dark:bg-zinc-950">
-        <div className="grid grid-cols-3 gap-0 border-b border-black/10 px-4 py-3 text-xs font-medium text-zinc-500 dark:border-white/10">
+        <div className="grid grid-cols-4 gap-0 border-b border-black/10 px-4 py-3 text-xs font-medium text-zinc-500 dark:border-white/10">
           <div>Familia</div>
           <div className="text-center">Piezas</div>
           <div className="text-right">ID</div>
+          <div className="text-right">Acciones</div>
         </div>
         {families.length === 0 ? (
           <div className="px-4 py-6 text-sm text-zinc-600 dark:text-zinc-400">
@@ -53,14 +54,34 @@ export default async function FamiliasPage() {
             (f: { id: string; name: string; _count: { parts: number } }) => (
             <div
               key={f.id}
-              className="grid grid-cols-3 items-center gap-0 border-b border-black/5 px-4 py-3 text-sm last:border-b-0 dark:border-white/5"
+              className="grid grid-cols-4 items-center gap-0 border-b border-black/5 px-4 py-3 text-sm last:border-b-0 dark:border-white/5"
             >
-              <div className="font-medium">{f.name}</div>
+              <div className="pr-3">
+                <form action={updateFamily} className="flex items-center gap-2">
+                  <input type="hidden" name="id" value={f.id} />
+                  <input
+                    name="name"
+                    defaultValue={f.name}
+                    className="w-full rounded-lg border border-black/10 bg-white px-2 py-1 text-sm dark:border-white/10 dark:bg-zinc-950"
+                  />
+                  <button className="rounded-lg border border-black/10 px-2 py-1 text-xs hover:bg-zinc-50 dark:border-white/10 dark:hover:bg-zinc-900">
+                    Guardar
+                  </button>
+                </form>
+              </div>
               <div className="text-center text-zinc-600 dark:text-zinc-400">
                 {f._count.parts}
               </div>
               <div className="text-right font-mono text-xs text-zinc-500">
                 {f.id}
+              </div>
+              <div className="text-right">
+                <form action={deleteFamily}>
+                  <input type="hidden" name="id" value={f.id} />
+                  <button className="rounded-lg border border-red-500/30 px-2 py-1 text-xs text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40">
+                    Eliminar
+                  </button>
+                </form>
               </div>
             </div>
           ),
