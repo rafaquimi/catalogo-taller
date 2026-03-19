@@ -14,7 +14,10 @@ export default async function EditarPiezaPage({
   const id = resolved?.id;
   if (!id) notFound();
 
-  const [part, families] = await Promise.all([
+  const [part, families]: [
+    Awaited<ReturnType<typeof prisma.part.findUnique>>,
+    { id: string; name: string }[],
+  ] = await Promise.all([
     prisma.part.findUnique({
       where: { id },
       include: { images: true, family: true },
@@ -58,7 +61,7 @@ export default async function EditarPiezaPage({
               required
               className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-black/10 dark:border-white/10 dark:bg-zinc-950"
             >
-              {families.map((f) => (
+              {families.map((f: { id: string; name: string }) => (
                 <option key={f.id} value={f.id}>
                   {f.name}
                 </option>

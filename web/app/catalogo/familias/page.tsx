@@ -78,8 +78,13 @@ export default async function FamiliasPage() {
               <div className="text-right">
                 <form action={deleteFamily}>
                   <input type="hidden" name="id" value={f.id} />
-                  <button className="rounded-lg border border-red-500/30 px-2 py-1 text-xs text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40">
-                    Eliminar
+                  <button
+                    type="submit"
+                    aria-label={`Eliminar familia ${f.name}`}
+                    title={`Eliminar familia ${f.name}`}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-red-500/40 text-sm font-bold leading-none text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40"
+                  >
+                    ✕
                   </button>
                 </form>
               </div>

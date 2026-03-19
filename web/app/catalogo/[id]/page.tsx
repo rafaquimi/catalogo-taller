@@ -64,8 +64,13 @@ export default async function PiezaDetallePage({
           </Link>
           <form action={deletePart}>
             <input type="hidden" name="id" value={part.id} />
-            <button className="rounded-xl border border-red-500/30 px-4 py-3 text-sm text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40">
-              Eliminar
+            <button
+              type="submit"
+              aria-label="Eliminar pieza"
+              title="Eliminar pieza"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-red-500/40 text-lg font-bold leading-none text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40"
+            >
+              ✕
             </button>
           </form>
           <Link
