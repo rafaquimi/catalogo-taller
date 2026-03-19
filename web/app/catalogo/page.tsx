@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import PartCardCarousel from "./PartCardCarousel";
 import FamiliaSelect from "./FamiliaSelect";
+import SearchInput from "./SearchInput";
 
 export const dynamic = "force-dynamic";
 
@@ -53,21 +55,11 @@ export default async function CatalogoPage({
           </p>
         </div>
         <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-          <form action="/catalogo" className="w-full lg:max-w-md">
-            {familia ? <input type="hidden" name="familia" value={familia} /> : null}
-            <div className="flex gap-2">
-              <input
-                type="search"
-                name="q"
-                defaultValue={q ?? ""}
-                placeholder="Buscar por nombre..."
-                className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10 dark:border-white/10 dark:bg-zinc-950"
-              />
-              <button className="rounded-xl border border-black/10 bg-white px-3 py-2 text-xs hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900">
-                Buscar
-              </button>
-            </div>
-          </form>
+          <Suspense fallback={
+            <div className="h-9 w-full max-w-md animate-pulse rounded-xl bg-zinc-100 dark:bg-zinc-800" />
+          }>
+            <SearchInput defaultValue={q} />
+          </Suspense>
           <div className="flex flex-wrap items-center gap-2">
             <FamiliaSelect families={families} selected={familia} q={q} />
             {(familia || q) && (
