@@ -7,10 +7,15 @@ export const dynamic = "force-dynamic";
 export default async function CatalogoPage({
   searchParams,
 }: {
-  searchParams: { familia?: string; q?: string };
+  searchParams:
+    | Promise<{ familia?: string; q?: string }>
+    | { familia?: string; q?: string };
 }) {
-  const familia = searchParams?.familia?.trim() || undefined;
-  const q = searchParams?.q?.trim() || undefined;
+  const resolvedSearchParams = searchParams
+    ? await searchParams
+    : ({} as { familia?: string; q?: string });
+  const familia = resolvedSearchParams?.familia?.trim() || undefined;
+  const q = resolvedSearchParams?.q?.trim() || undefined;
 
   const families = await prisma.family.findMany({
     orderBy: { name: "asc" },
