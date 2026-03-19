@@ -7,16 +7,27 @@ export const dynamic = "force-dynamic";
 export default async function CatalogoPage({
   searchParams,
 }: {
-  searchParams: { familia?: string };
+  searchParams: { familia?: string; q?: string };
 }) {
-  const { familia } = searchParams;
+  const familia = searchParams?.familia?.trim() || undefined;
+  const q = searchParams?.q?.trim() || undefined;
 
   const families = await prisma.family.findMany({
     orderBy: { name: "asc" },
   });
 
   const parts = await prisma.part.findMany({
-    where: familia ? { familyId: familia } : undefined,
+    where: {
+      ...(familia ? { familyId: familia } : {}),
+      ...(q
+        ? {
+            description: {
+              contains: q,
+              mode: "insensitive",
+            },
+          }
+        : {}),
+    },
     include: { family: true, images: { orderBy: { createdAt: "asc" } } },
     orderBy: { updatedAt: "desc" },
   });
@@ -30,9 +41,24 @@ export default async function CatalogoPage({
             Filtra por familia y abre cada pieza para ver sus fotos.
           </p>
         </div>
+        <form action="/catalogo" className="w-full sm:max-w-sm">
+          {familia ? <input type="hidden" name="familia" value={familia} /> : null}
+          <div className="flex gap-2">
+            <input
+              type="search"
+              name="q"
+              defaultValue={q ?? ""}
+              placeholder="Buscar por nombre..."
+              className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10 dark:border-white/10 dark:bg-zinc-950"
+            />
+            <button className="rounded-xl border border-black/10 bg-white px-3 py-2 text-xs hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900">
+              Buscar
+            </button>
+          </div>
+        </form>
         <div className="flex flex-wrap gap-2">
           <Link
-            href="/catalogo"
+            href={q ? `/catalogo?q=${encodeURIComponent(q)}` : "/catalogo"}
             className={`rounded-full border px-3 py-1.5 text-xs ${
               !familia
                 ? "border-black/20 bg-black text-white dark:border-white/20"
@@ -44,7 +70,9 @@ export default async function CatalogoPage({
           {families.map((f: { id: string; name: string }) => (
             <Link
               key={f.id}
-              href={`/catalogo?familia=${encodeURIComponent(f.id)}`}
+              href={`/catalogo?familia=${encodeURIComponent(f.id)}${
+                q ? `&q=${encodeURIComponent(q)}` : ""
+              }`}
               className={`rounded-full border px-3 py-1.5 text-xs ${
                 familia === f.id
                   ? "border-black/20 bg-black text-white dark:border-white/20"
@@ -54,6 +82,14 @@ export default async function CatalogoPage({
               {f.name}
             </Link>
           ))}
+          {(familia || q) && (
+            <Link
+              href="/catalogo"
+              className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+            >
+              Limpiar filtros
+            </Link>
+          )}
         </div>
       </div>
 
