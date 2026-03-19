@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import PartCardCarousel from "./PartCardCarousel";
+import FamiliaSelect from "./FamiliaSelect";
 
 export const dynamic = "force-dynamic";
 
@@ -67,32 +68,8 @@ export default async function CatalogoPage({
               </button>
             </div>
           </form>
-          <div className="flex flex-wrap gap-2">
-            <Link
-              href={q ? `/catalogo?q=${encodeURIComponent(q)}` : "/catalogo"}
-              className={`rounded-full border px-3 py-1.5 text-xs ${
-                !familia
-                  ? "border-black/20 bg-black text-white dark:border-white/20"
-                  : "border-black/10 bg-white hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
-              }`}
-            >
-              Todas
-            </Link>
-            {families.map((f: { id: string; name: string }) => (
-              <Link
-                key={f.id}
-                href={`/catalogo?familia=${encodeURIComponent(f.id)}${
-                  q ? `&q=${encodeURIComponent(q)}` : ""
-                }`}
-                className={`rounded-full border px-3 py-1.5 text-xs ${
-                  familia === f.id
-                    ? "border-black/20 bg-black text-white dark:border-white/20"
-                    : "border-black/10 bg-white hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
-                }`}
-              >
-                {f.name}
-              </Link>
-            ))}
+          <div className="flex flex-wrap items-center gap-2">
+            <FamiliaSelect families={families} selected={familia} q={q} />
             {(familia || q) && (
               <Link
                 href="/catalogo"
