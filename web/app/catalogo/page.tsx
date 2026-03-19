@@ -4,18 +4,23 @@ import PartCardCarousel from "./PartCardCarousel";
 
 export const dynamic = "force-dynamic";
 
+function getSingleParam(value: string | string[] | undefined) {
+  if (Array.isArray(value)) return value[0]?.trim() || undefined;
+  return value?.trim() || undefined;
+}
+
 export default async function CatalogoPage({
   searchParams,
 }: {
   searchParams:
-    | Promise<{ familia?: string; q?: string }>
-    | { familia?: string; q?: string };
+    | Promise<{ familia?: string | string[]; q?: string | string[] }>
+    | { familia?: string | string[]; q?: string | string[] };
 }) {
   const resolvedSearchParams = searchParams
     ? await searchParams
-    : ({} as { familia?: string; q?: string });
-  const familia = resolvedSearchParams?.familia?.trim() || undefined;
-  const q = resolvedSearchParams?.q?.trim() || undefined;
+    : ({} as { familia?: string | string[]; q?: string | string[] });
+  const familia = getSingleParam(resolvedSearchParams?.familia);
+  const q = getSingleParam(resolvedSearchParams?.q);
 
   const families = await prisma.family.findMany({
     orderBy: { name: "asc" },
@@ -39,62 +44,64 @@ export default async function CatalogoPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="space-y-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Piezas</h1>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
             Filtra por familia y abre cada pieza para ver sus fotos.
           </p>
         </div>
-        <form action="/catalogo" className="w-full sm:max-w-sm">
-          {familia ? <input type="hidden" name="familia" value={familia} /> : null}
-          <div className="flex gap-2">
-            <input
-              type="search"
-              name="q"
-              defaultValue={q ?? ""}
-              placeholder="Buscar por nombre..."
-              className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10 dark:border-white/10 dark:bg-zinc-950"
-            />
-            <button className="rounded-xl border border-black/10 bg-white px-3 py-2 text-xs hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900">
-              Buscar
-            </button>
-          </div>
-        </form>
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href={q ? `/catalogo?q=${encodeURIComponent(q)}` : "/catalogo"}
-            className={`rounded-full border px-3 py-1.5 text-xs ${
-              !familia
-                ? "border-black/20 bg-black text-white dark:border-white/20"
-                : "border-black/10 bg-white hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
-            }`}
-          >
-            Todas
-          </Link>
-          {families.map((f: { id: string; name: string }) => (
+        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+          <form action="/catalogo" className="w-full lg:max-w-md">
+            {familia ? <input type="hidden" name="familia" value={familia} /> : null}
+            <div className="flex gap-2">
+              <input
+                type="search"
+                name="q"
+                defaultValue={q ?? ""}
+                placeholder="Buscar por nombre..."
+                className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10 dark:border-white/10 dark:bg-zinc-950"
+              />
+              <button className="rounded-xl border border-black/10 bg-white px-3 py-2 text-xs hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900">
+                Buscar
+              </button>
+            </div>
+          </form>
+          <div className="flex flex-wrap gap-2">
             <Link
-              key={f.id}
-              href={`/catalogo?familia=${encodeURIComponent(f.id)}${
-                q ? `&q=${encodeURIComponent(q)}` : ""
-              }`}
+              href={q ? `/catalogo?q=${encodeURIComponent(q)}` : "/catalogo"}
               className={`rounded-full border px-3 py-1.5 text-xs ${
-                familia === f.id
+                !familia
                   ? "border-black/20 bg-black text-white dark:border-white/20"
                   : "border-black/10 bg-white hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
               }`}
             >
-              {f.name}
+              Todas
             </Link>
-          ))}
-          {(familia || q) && (
-            <Link
-              href="/catalogo"
-              className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
-            >
-              Limpiar filtros
-            </Link>
-          )}
+            {families.map((f: { id: string; name: string }) => (
+              <Link
+                key={f.id}
+                href={`/catalogo?familia=${encodeURIComponent(f.id)}${
+                  q ? `&q=${encodeURIComponent(q)}` : ""
+                }`}
+                className={`rounded-full border px-3 py-1.5 text-xs ${
+                  familia === f.id
+                    ? "border-black/20 bg-black text-white dark:border-white/20"
+                    : "border-black/10 bg-white hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+                }`}
+              >
+                {f.name}
+              </Link>
+            ))}
+            {(familia || q) && (
+              <Link
+                href="/catalogo"
+                className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs hover:bg-zinc-50 dark:border-white/10 dark:bg-zinc-950 dark:hover:bg-zinc-900"
+              >
+                Limpiar filtros
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
